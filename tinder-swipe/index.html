@@ -1,0 +1,166 @@
+<title>tinder swipe</title>
+
+<main>
+    <section>
+        <header>
+            <img src="./tinder-logo.webp" alt="Tinder Logo">
+        </header>
+        <div class="cards">
+            <article>
+                <img src="./photos/2.webp" alt="Brandon, 28 años">
+                <h2>Brandon<span>28 años</span></h2>
+                <div class="choice nope"></div>
+                <div class="choice like"></div>
+            </article>
+            <article>
+                <img src="./photos/1.webp" alt="Leyla, 24 años">
+                <h2>Leyla<span>24 años</span></h2>
+                <div class="choice nope"></div>
+                <div class="choice like"></div>
+            </article>
+        </div>
+        <footer>
+            <button class="is-refresh" aria-label="nope"></button>
+            <button class="is-nope is-big" aria-label="remove"></button>
+            <button class="is-fav" aria-label="fav"></button>
+            <button class="is-like is-big" aria-label="like"></button>
+            <button class="is-zap" aria-label="zap "></button>
+        </footer>
+    </section>
+</main>
+
+<style>
+    *, *::after, *::before{
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    body{
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        display: grid;
+        place-content: center;
+        min-height: 100vh;
+        overflow: hidden;
+        user-select: none;
+        background: #222;
+    }
+    main{
+        background-image: url('./iphone.webp');
+        background-size: contain;
+        width: 320px;
+        height: 640px;
+        display: flex;
+        filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.9));
+    }
+    section{
+        background-color: #f6f6f6;
+        width: 100%;
+        border-radius: 32px;
+        display: flex;
+        gap: 24px;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+        padding: 16px 6px;
+        margin: 24px;
+    }
+    header{
+        display: flex;
+        justify-content: center;
+
+        & img{
+            width: 24px;
+            height: 24px
+        }
+    }
+    .cards{
+        position: relative;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+
+        & article{
+            border-radius: 8px;
+            cursor: grab;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+
+            & img{
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            & h2{
+                color: white;
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: flex-end;
+                height: 100%;
+                width: 100%;
+                padding: 16px;
+                z-index: 3;
+                background: linear-gradient(to top, #00000088 20%, transparent 40%);
+            }
+            & span{
+                margin-left: 8px;
+                font-size: 18px;
+                line-height: 1.4;
+                font-weight: 400;
+            }
+        }
+    }
+    footer{
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+        padding: 0 24px;
+        justify-content: center;
+        align-items: center;
+
+        & button{
+            background: url('./tinder-icons.webp');
+            background-position: 0px 0px;
+            background-size: 180px;
+            height: 32px;
+            width: 32px;
+            border-radius: 50%;
+            border: 0;
+            cursor: pointer;
+            transition: scale .3s;
+
+            &:hover{
+                scale: 1.4;
+            }
+
+            &.is-big{
+                background-size: 250px;
+                width: 48px;
+                height: 48px;
+            }
+
+            &.is-refresh{
+                background-position: -145px;
+            }
+            &.is-nope{
+                background-position: -150px;
+            }
+            &.is-fav{
+                background-position: 105px;
+            }
+            &.is-like{
+                background-position: 200px;
+            }
+            &.is-zap{
+                background-position: 0;
+            }
+        }
+        
+    }
+</style>
