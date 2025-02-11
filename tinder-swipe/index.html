@@ -222,15 +222,17 @@
 </style>
 
 <script>
-    let isAnimation = false;
+    let isAnimating = false;
     let pullDeltaX = 0; // distace of card movement
 
     const DESICION_WINDOW = 100;
     function startDrag(event){
-        if(isAnimation) return
+        if(isAnimating) return
 
         // get the first article element
         const actualCard = event.target.closest('article');
+
+        if (!actualCard) return
 
         const startX = event.pageX ?? event.touches[0].pageX;
         // get initial posistion of mouse or finger
@@ -247,7 +249,7 @@
             pullDeltaX = currentX - startX;
             if(pullDeltaX === 0) return
 
-            isAnimation = true;
+            isAnimating = true;
 
             const deg = pullDeltaX / 15;
             actualCard.style.transform = `translateX(${pullDeltaX}px) rotate(${deg}deg)`;
@@ -264,8 +266,6 @@
         }
 
         function onEnd(event){
-            
-            console.log(pullDeltaX);
             actualCard.style.cursor = 'grab';
             document.removeEventListener('mousemove', onMove);
             document.removeEventListener('mouseup', onEnd);
@@ -286,20 +286,17 @@
             } else {
                 actualCard.classList.add('reset');
                 actualCard.classList.remove('go-right', 'go-left');
+                actualCard.querySelectorAll('.choice').forEach(element => {
+                    element.style.opacity = 0;
+                });
             }
-
-
             // reset variables
             actualCard.addEventListener('transitionend', () =>{
                 actualCard.removeAttribute('style');
                 actualCard.classList.remove('reset');
                 pullDeltaX = 0;
-                isAnimation = false;
+                isAnimating = false;
             });
-
-            
-
-            
         }
     }
 
