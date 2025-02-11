@@ -9,15 +9,16 @@
             <article>
                 <img src="./photos/2.webp" alt="Brandon, 28 años">
                 <h2>Brandon<span>28 años</span></h2>
-                <div class="choice nope"></div>
-                <div class="choice like"></div>
+                <div class="choice nope">NOPE</div>
+                <div class="choice like">LIKE</div>
             </article>
             <article>
                 <img src="./photos/1.webp" alt="Leyla, 24 años">
                 <h2>Leyla<span>24 años</span></h2>
-                <div class="choice nope"></div>
-                <div class="choice like"></div>
+                <div class="choice nope">NOPE</div>
+                <div class="choice like">LIKE</div>
             </article>
+            <span>No more people around ...</span>
         </div>
         <footer>
             <button class="is-refresh" aria-label="nope"></button>
@@ -114,6 +115,61 @@
                 line-height: 1.4;
                 font-weight: 400;
             }
+
+            &.go-left{
+                transform: translateX(-150%) rotate(-30deg) !important;
+            }
+
+            &.go-right{
+                transform: translateX(150%) rotate(30deg) !important;
+            }
+
+            &.go-left, 
+            &.go-right{
+                transition: transform .3s ease, rotate .3s ease;
+            }
+
+            &.reset {
+                transition: transform .3s ease;
+                transform: translateX(0) !important;
+            }
+
+            & .choice{
+                position: absolute;
+                border: 3px solid;
+                color: black;
+                right: 16px;
+                top: 24px;
+                z-index: 9999;
+                padding: 4px 8px;
+                font-size: 24px;
+                font-weight: 24px;
+                text-shadow: 0 0 10px rgb(0, 0, 0, .3);
+                width: fit-content;
+                opacity: 0;
+
+                &.nope{
+                    border-color: #f44336;
+                    color: #f44336;
+                    transform: rotate(30deg);
+                }
+
+                &.like{
+                    border-color: #6cf170;
+                    color: #6cf170;
+                    transform: rotate(-30deg);
+                    left: 16px;
+                }
+            }
+        }
+
+        & > span{
+            display: grid;
+            place-content: center;
+            color: #777;
+            font-size: 14px;
+            text-align: center;
+            height: 100%;
         }
     }
     footer{
@@ -164,3 +220,89 @@
         
     }
 </style>
+
+<script>
+    let isAnimation = false;
+    let pullDeltaX = 0; // distace of card movement
+
+    const DESICION_WINDOW = 100;
+    function startDrag(event){
+        if(isAnimation) return
+
+        // get the first article element
+        const actualCard = event.target.closest('article');
+
+        const startX = event.pageX ?? event.touches[0].pageX;
+        // get initial posistion of mouse or finger
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
+
+        document.addEventListener('touchmove', onMove, {passive: true});
+        document.addEventListener('touchend', onEnd, {passive: true});
+
+        function onMove(event){
+            // get current position of 
+            const currentX = event.pageX ?? event.touches[0].pageX;
+
+            pullDeltaX = currentX - startX;
+            if(pullDeltaX === 0) return
+
+            isAnimation = true;
+
+            const deg = pullDeltaX / 15;
+            actualCard.style.transform = `translateX(${pullDeltaX}px) rotate(${deg}deg)`;
+            actualCard.style.cursor = 'grabbing';
+
+            // change opacity of the choice 
+            const opacity = Math.abs(pullDeltaX) / 100;
+            const isRight = pullDeltaX > 0;
+            const choiceElem = isRight
+            ? actualCard.querySelector('.choice.like')
+            : actualCard.querySelector('.choice.nope');
+
+            choiceElem.style.opacity = opacity;
+        }
+
+        function onEnd(event){
+            
+            console.log(pullDeltaX);
+            actualCard.style.cursor = 'grab';
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onEnd);
+
+            document.removeEventListener('touchmove', onMove);
+            document.removeEventListener('touchend', onEnd);
+
+            const desicionTaken = Math.abs(pullDeltaX) >= DESICION_WINDOW;
+
+            if (desicionTaken){
+                const goRight = pullDeltaX >= 0;
+                const goLeft = !goRight;
+
+                actualCard.classList.add(goRight ? 'go-right' : 'go-left');
+                actualCard.addEventListener('transitionend', () => {
+                    actualCard.remove();
+                }, { once: true });
+            } else {
+                actualCard.classList.add('reset');
+                actualCard.classList.remove('go-right', 'go-left');
+            }
+
+
+            // reset variables
+            actualCard.addEventListener('transitionend', () =>{
+                actualCard.removeAttribute('style');
+                actualCard.classList.remove('reset');
+                pullDeltaX = 0;
+                isAnimation = false;
+            });
+
+            
+
+            
+        }
+    }
+
+    document.addEventListener('mousedown', startDrag)
+    document.addEventListener('touchstart', startDrag, {passive: true});
+</script>
