@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll animation</title>
+    <style>
+        *, *::before, *::after{
+            box-sizing: border-box;
+        }
+        body{
+            margin: 0;
+        }
+        img{
+            width: 100vw;
+            height: 100dvh;
+            position: fixed;
+            object-fit: cover;
+        }
+        main{
+            height: 300dvh;
+        }
+        header {
+            position: absolute;
+            background: linear-gradient(40deg, rgb(224, 160, 40), hwb(0 2% 27%) 40%);
+            width: 300px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 300px;
+            border-radius: 1000px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            top: 0;
+            margin-top: -200px;
+            animation: slideInDown 1500ms ease-out;
+            z-index: 1;
+            img{
+                width: 220px;
+                margin: 0 auto;
+                height: auto;
+                margin-bottom: 50px;
+            }
+        }
+
+        @keyframes slideInDown{
+            from{
+                transform: translate3d(-50%, -100%, 0);
+                opacity: 0;
+            }
+            to{
+                transform: translate(-50%, 0, 0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header>
+            <img src="./logo.png" alt="">
+        </header>
+        <img id="img" src="./frames/0.webp" alt="">
+    </main>
+    
+</body>
+</html>
+
+<script type="module">
+    const MAX_FRAMES = 151;
+    const img = document.querySelector('#img');
+    let maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    });
+
+    window.addEventListener('scroll',() => {
+        // get the actuall position
+        const scrollPosition =  window.scrollY;
+        // get scroll Fraction
+        const scrollFraction = scrollPosition / maxScroll;
+
+        const frame = Math.ceil(MAX_FRAMES * scrollFraction) || 1;
+
+        const id = frame.toString().padStart(3, '0');
+
+        img.src = `./frames/moto-${id}.webp`
+    })
+</script>
